@@ -81,24 +81,21 @@ module.exports.generateSql = function () {
   )
 }
 ```
+
 You might want to choose the JS file approach, in order to make use (secret)
 environment variables such as the above.
 
 Support for asynchronous functions is provided, in the event you need to retrieve data from a external source, for example:
 
 ```js
-const axios = require("axios")
+const axios = require('axios')
 
 module.exports.generateSql = async () => {
-    const response = await axios(
-        {
-            'method': 'get',
-            'url': 'https://api.example.org/person/1'
-        }
-    )
-    return (
-        `INSERT INTO person (name, age) VALUES ('${response.data.name}', ${response.data.age});`
-    )
+  const response = await axios({
+    method: 'get',
+    url: 'https://api.example.org/person/1',
+  })
+  return `INSERT INTO person (name, age) VALUES ('${response.data.name}', ${response.data.age});`
 }
 ```
 
@@ -163,6 +160,16 @@ const postgrator = new Postgrator({
   connectionString: 'tcp://username:password@hosturl/databasename',
   ssl: true,
   currentSchema: 'my-schema-name', // migrations will only run against this schema
+})
+```
+
+You can also pass in an instance of a Postgres pool from `pg`. A client will be connected from this pool.
+
+```js
+const { Pool } = require('pg')
+const connectionPool = new Pool()
+const postgrator = new Postgrator({
+  connectionPool,
 })
 ```
 
